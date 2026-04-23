@@ -1,0 +1,68 @@
+ALL NMEASURES 
+
+DEFINE 
+---- MODEL MEASURES BEGIN ----
+MEASURE 'MEASURES (2)'[Average Defect RateAvg Defect Rate] = AVERAGE(supply_chain_data[Defect rates])
+MEASURE 'MEASURES (2)'[Avg Selling Price] = AVERAGE(supply_chain_data[Price])
+MEASURE 'MEASURES (2)'[Avg Shipping Cost] = AVERAGE(supply_chain_data[Shipping costs])
+MEASURE 'MEASURES (2)'[avg shipping times] = AVERAGE(supply_chain_data[Shipping times])
+MEASURE 'MEASURES (2)'[Cost to Revenue Ratio] = 
+DIVIDE(
+    SUM(supply_chain_data[Costs]),
+    SUM(supply_chain_data[Revenue generated]),
+    0
+)
+MEASURE 'MEASURES (2)'[Gross Margin %] = 
+DIVIDE(
+    [Gross Profit],
+    SUM(supply_chain_data[Revenue generated]),
+    0)
+
+MEASURE 'MEASURES (2)'[Gross Profit] = 
+SUM(supply_chain_data[Revenue generated]) 
+- SUM(supply_chain_data[Manufacturing costs])
+- SUM(supply_chain_data[Shipping costs])
+
+MEASURE 'MEASURES (2)'[High Defect SKUs] = 
+CALCULATE(
+    COUNTROWS(supply_chain_data),
+    supply_chain_data[Defect rates] > 0.03
+)
+
+MEASURE 'MEASURES (2)'[Inspection Pass Rate] = 
+DIVIDE(
+    CALCULATE(COUNTROWS(supply_chain_data), supply_chain_data[Inspection results] = "Pass"),
+    COUNTROWS(supply_chain_data),
+    0
+) * 100
+
+MEASURE 'MEASURES (2)'[Overproduction] = 
+SUM(supply_chain_data[Production volumes]) 
+- SUM(supply_chain_data[Number of products sold])
+
+MEASURE 'MEASURES (2)'[productionvolume] = sum(supply_chain_data[Production volumes])
+
+MEASURE 'MEASURES (2)'[REVENUE] = SUM(supply_chain_data[Revenue generated])
+
+MEASURE 'MEASURES (2)'[Revenue per Unit] = 
+DIVIDE(
+    SUM(supply_chain_data[Revenue generated]),
+    SUM(supply_chain_data[Number of products sold]),
+    0
+)
+
+MEASURE 'MEASURES (2)'[Stockout SKUs] = 
+CALCULATE(
+    COUNTROWS(supply_chain_data),
+    supply_chain_data[Stock levels] = 0)
+
+MEASURE 'MEASURES (2)'[Total Cycle Time] = 
+AVERAGEX(supply_chain_data,
+    supply_chain_data[Manufacturing lead time] 
+    + supply_chain_data[Shipping times]
+)
+
+MEASURE 'MEASURES (2)'[Total Units Sold] = SUM(supply_chain_data[Number of products sold])
+MEASURE 'MEASURES (2)'[totalproducts] = SUM(supply_chain_data[Number of products sold])
+---- MODEL MEASURES END ----
+
